@@ -69,7 +69,6 @@ resource "azurerm_network_interface" "vault-nic" {
   name                      = "vault-demo-nic"
   location                  = var.location
   resource_group_name       = azurerm_resource_group.rsg.name
-  network_security_group_id = azurerm_network_security_group.vault-nsg.id
 
   ip_configuration {
     name                          = "IPConfiguration"
@@ -78,9 +77,6 @@ resource "azurerm_network_interface" "vault-nic" {
     public_ip_address_id          = azurerm_public_ip.vault-pip.id
   }
 
-  tags {
-    environment = "dev"
-  }
 }
 
 resource "tls_private_key" "key" {
