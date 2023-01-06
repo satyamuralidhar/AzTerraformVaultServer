@@ -5,9 +5,6 @@ resource "azurerm_resource_group" "rsg" {
   name     = "${var.resource_group_name}"
   location = "${var.location}"
 
-  tags {
-    environment = "dev"
-  }
 }
 
 resource "azurerm_virtual_network" "vnet" {
@@ -33,9 +30,6 @@ resource "azurerm_public_ip" "vault-pip" {
   public_ip_address_allocation = "static"
   domain_name_label            = "${var.resource_group_name}-ssh"
 
-  tags {
-    environment = "dev"
-  }
 }
 
 resource "azurerm_network_security_group" "vault-nsg" {
@@ -149,9 +143,6 @@ resource "azurerm_virtual_machine" "vault-vm" {
     type = "SystemAssigned"
   }
 
-  tags {
-    environment = "dev"
-  }
 }
 
 resource "azurerm_virtual_machine_extension" "vault-extension" {
