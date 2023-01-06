@@ -55,9 +55,9 @@ resource "azurerm_network_security_rule" "ssh_access" {
   priority                    = 200
   source_address_prefix       = "*"
   source_port_range           = "*"
-  destination_address_prefix  = azurerm_network_interface.vault-nic.private_ip_address
+  destination_address_prefix  = "*"
   destination_port_range      = "22"
-  protocol                    = "TCP"
+  protocol                    = "Tcp"
   resource_group_name         = azurerm_resource_group.rsg.name
 }
 
@@ -68,7 +68,7 @@ resource "azurerm_network_security_rule" "ssh_access_vault_demo" {
   priority                    = 210
   source_address_prefix       = "*"
   source_port_range           = "*"
-  destination_address_prefix  = azurerm_network_interface.vault-nic.private_ip_address
+  destination_address_prefix  = "*"
   destination_port_range      = "22"
   protocol                    = "Tcp"
   resource_group_name         = azurerm_resource_group.rsg.name
