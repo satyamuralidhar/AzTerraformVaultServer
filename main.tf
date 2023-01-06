@@ -27,7 +27,7 @@ resource "azurerm_public_ip" "vault-pip" {
   name                = "vault-public-ip"
   location            = var.location
   resource_group_name = azurerm_resource_group.rsg.name
-  allocation_method   = "dynamic"
+  allocation_method   = "Dynamic"
 
 }
 
@@ -88,7 +88,7 @@ resource "tls_private_key" "key" {
 }
 
 resource "null_resource" "save-key" {
-  triggers {
+  triggers = {
     key = tls_private_key.key.private_key_pem
   }
 
