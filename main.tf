@@ -115,13 +115,13 @@ resource "azurerm_network_interface" "vault-nic" {
 }
 
 resource "azurerm_network_interface_security_group_association" "nicassociation" {
-  network_interface_id      = azurerm_network_interface.mynic.id
-  network_security_group_id = azurerm_network_security_group.nsg.id
+  network_interface_id      = azurerm_network_interface.vault-nic.id
+  network_security_group_id = azurerm_network_security_group.vault-nsg.id
 }
 
 resource "azurerm_subnet_network_security_group_association" "nsgassociation" {
   subnet_id                 = azurerm_subnet.subnet.id
-  network_security_group_id = azurerm_network_security_group.nsg.id
+  network_security_group_id = azurerm_network_security_group.vault-nsg.id
 }
 
 resource "tls_private_key" "key" {
