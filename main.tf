@@ -83,7 +83,7 @@ resource "azurerm_network_interface" "vault-nic" {
   ip_configuration {
     name                          = "IPConfiguration"
     subnet_id                     = azurerm_subnet.subnet.id
-    private_ip_address_allocation = "dynamic"
+    private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.vault-pip.id
   }
 
