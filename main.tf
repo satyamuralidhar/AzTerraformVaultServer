@@ -182,10 +182,7 @@ resource "azurerm_virtual_machine_extension" "vault-extension" {
 
   settings = <<SETTINGS
     {
-      "commandToExecute": "${var.cmd_extension}",
-       "fileUris": [
-        "${var.cmd_script}"
-       ]
+      "commandToExecute": "sh ${var.cmd_script}"
     }
 SETTINGS
 }
