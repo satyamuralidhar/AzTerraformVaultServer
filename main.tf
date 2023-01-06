@@ -175,6 +175,6 @@ data "azurerm_client_config" "clientconfig" {}
 resource "azurerm_role_assignment" "roleassign" {
   scope                = data.azurerm_subscription.primary.id
   role_definition_name = "Reader"
-  principal_id         = data.azurerm_client_config.clientconfig.object_id
+  principal_id         = lookup(azurerm_virtual_machine.vault-vm.identity[0], "principal_id")
 }
 
