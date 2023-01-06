@@ -164,7 +164,7 @@ resource "azurerm_virtual_machine" "vault-vm" {
 
     ssh_keys {
       path     = "/home/azureuser/.ssh/authorized_keys"
-      key_data = "${trimspace(tls_private_key.key.public_key_openssh)} user@vaultdemo.io"
+      key_data = "${trimspace(tls_private_key.key.public_key_openssh)} satya"
     }
   }
   identity {
