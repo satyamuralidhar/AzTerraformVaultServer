@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     azurerm = {
-      source = "hashicorp/azurerm"
+      source  = "hashicorp/azurerm"
       version = "~>3.0.0"
     }
   }
@@ -45,7 +45,7 @@ resource "azurerm_network_security_group" "vault-nsg" {
   name                = "vault-ssh"
   location            = var.location
   resource_group_name = azurerm_resource_group.rsg.name
-   security_rule {
+  security_rule {
     name                       = "vault-inbound"
     priority                   = 105
     direction                  = "Inbound"
@@ -56,7 +56,7 @@ resource "azurerm_network_security_group" "vault-nsg" {
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
-   security_rule {
+  security_rule {
     name                       = "vault-outbound"
     priority                   = 100
     direction                  = "Outbound"
@@ -100,9 +100,9 @@ resource "azurerm_network_security_rule" "ssh_access_vault_demo" {
 }
 
 resource "azurerm_network_interface" "vault-nic" {
-  name                      = "vault-demo-nic"
-  location                  = var.location
-  resource_group_name       = azurerm_resource_group.rsg.name
+  name                = "vault-demo-nic"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rsg.name
 
   ip_configuration {
     name                          = "IPConfiguration"
@@ -175,7 +175,7 @@ resource "azurerm_virtual_machine" "vault-vm" {
 
 resource "azurerm_virtual_machine_extension" "vault-extension" {
   name                 = "vault-demo-extension"
-  virtual_machine_id = azurerm_virtual_machine.vault-vm.id
+  virtual_machine_id   = azurerm_virtual_machine.vault-vm.id
   publisher            = "Microsoft.OSTCExtensions"
   type                 = "CustomScriptForLinux"
   type_handler_version = "1.2"
