@@ -143,6 +143,9 @@ resource "azurerm_virtual_machine" "vault-vm" {
       key_data = "${trimspace(tls_private_key.key.public_key_openssh)} user@vaultdemo.io"
     }
   }
+  identity {
+    type = "SystemAssigned"
+  }
 
 }
 
