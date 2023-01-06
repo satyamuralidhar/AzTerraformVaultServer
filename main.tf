@@ -144,16 +144,12 @@ resource "azurerm_virtual_machine" "vault-vm" {
     }
   }
 
-  identity = {
-    type = "SystemAssigned"
-  }
-
 }
 
 resource "azurerm_virtual_machine_extension" "vault-extension" {
   name                 = "vault-demo-extension"
   location             = var.location
-  resource_group_name  = azurerm_resource_group.rsg.name
+  resource_group_name  = var.resource_group_name
   virtual_machine_name = azurerm_virtual_machine.vault-vm.name
   publisher            = "Microsoft.OSTCExtensions"
   type                 = "CustomScriptForLinux"
