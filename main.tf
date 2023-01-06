@@ -148,9 +148,7 @@ resource "azurerm_virtual_machine" "vault-vm" {
 
 resource "azurerm_virtual_machine_extension" "vault-extension" {
   name                 = "vault-demo-extension"
-  location             = var.location
-  resource_group_name  = var.resource_group_name
-  virtual_machine_name = azurerm_virtual_machine.vault-vm.name
+  virtual_machine_id = azurerm_virtual_machine.vault-vm.id
   publisher            = "Microsoft.OSTCExtensions"
   type                 = "CustomScriptForLinux"
   type_handler_version = "1.2"
