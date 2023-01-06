@@ -33,6 +33,7 @@ resource "azurerm_subnet" "subnet" {
 }
 
 
+
 resource "azurerm_public_ip" "vault-pip" {
   name                = "vault-public-ip"
   location            = var.location
@@ -111,6 +112,16 @@ resource "azurerm_network_interface" "vault-nic" {
     public_ip_address_id          = azurerm_public_ip.vault-pip.id
   }
 
+}
+
+resource "azurerm_network_interface_security_group_association" "nicassociation" {
+  network_interface_id      = azurerm_network_interface.mynic.id
+  network_security_group_id = azurerm_network_security_group.nsg.id
+}
+
+resource "azurerm_subnet_network_security_group_association" "nsgassociation" {
+  subnet_id                 = azurerm_subnet.subnet.id
+  network_security_group_id = azurerm_network_security_group.nsg.id
 }
 
 resource "tls_private_key" "key" {
