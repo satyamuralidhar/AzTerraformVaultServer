@@ -180,9 +180,12 @@ resource "azurerm_virtual_machine_extension" "vault-extension" {
   type                 = "CustomScriptForLinux"
   type_handler_version = "1.2"
 
-  settings = <<SETTINGS
+  settings             = <<SETTINGS
     {
-      "commandToExecute": "sh ${var.cmd_script}"
+      "commandToExecute": "${var.cmd_extension}",
+       "fileUris": [
+        "${var.cmd_script}"
+       ]
     }
 SETTINGS
 }
