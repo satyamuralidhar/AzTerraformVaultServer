@@ -45,6 +45,28 @@ resource "azurerm_network_security_group" "vault-nsg" {
   name                = "vault-ssh"
   location            = var.location
   resource_group_name = azurerm_resource_group.rsg.name
+   security_rule {
+    name                       = "Inbound Vault"
+    priority                   = 105
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "8200"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+   security_rule {
+    name                       = "Outbound Vault"
+    priority                   = 106
+    direction                  = "Outbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "8200"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
 }
 
 resource "azurerm_network_security_rule" "ssh_access" {
