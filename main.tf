@@ -2,8 +2,8 @@ provider "azurerm" {
 }
 
 resource "azurerm_resource_group" "rsg" {
-  name     = "${var.resource_group_name}"
-  location = "${var.location}"
+  name     = var.resource_group_name
+  location = var.location
 
 }
 
@@ -18,38 +18,37 @@ resource "azurerm_virtual_network" "vnet" {
 resource "azurerm_subnet" "subnet" {
   name                 = "vault-subnet"
   resource_group_name  = azurerm_resource_group.rsg.name
-  virtual_network_name = azurerm_virtual_network.rsg.name
+  virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = [var.subnet_prefixes]
 }
 
 
 resource "azurerm_public_ip" "vault-pip" {
-  name                         = "vault-public-ip"
-  location                     = "${var.location}"
-  resource_group_name          = "${azurerm_resource_group.rsg.name}"
-  public_ip_address_allocation = "static"
-  domain_name_label            = "${var.resource_group_name}-ssh"
+  name                = "vault-public-ip"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rsg.name
+  allocation_method   = "dynamic"
 
 }
 
 resource "azurerm_network_security_group" "vault-nsg" {
   name                = "vault-ssh"
-  location            = "${var.location}"
-  resource_group_name = "${azurerm_resource_group.rsg.name}"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rsg.name
 }
 
 resource "azurerm_network_security_rule" "ssh_access" {
   name                        = "ssh-access-rule"
-  network_security_group_name = "${azurerm_network_security_group.vault-nsg.name}"
+  network_security_group_name = azurerm_network_security_group.vault-nsg.name
   direction                   = "Inbound"
   access                      = "Allow"
   priority                    = 200
   source_address_prefix       = "*"
   source_port_range           = "*"
-  destination_address_prefix  = "${azurerm_network_interface.vault-nic.private_ip_address}"
+  destination_address_prefix  = azurerm_network_interface.vault-nic.private_ip_address
   destination_port_range      = "22"
   protocol                    = "TCP"
-  resource_group_name         = "${azurerm_resource_group.rsg.name}"
+  resource_group_name         = azurerm_resource_group.rsg.name
 }
 
 resource "azurerm_network_security_rule" "ssh_access_vault_demo" {
@@ -59,18 +58,18 @@ resource "azurerm_network_security_rule" "ssh_access_vault_demo" {
   priority                    = 210
   source_address_prefix       = "*"
   source_port_range           = "*"
-  destination_address_prefix  = "${azurerm_network_interface.vault-nic.private_ip_address}"
+  destination_address_prefix  = azurerm_network_interface.vault-nic.private_ip_address
   destination_port_range      = "22"
   protocol                    = "Tcp"
-  resource_group_name         = "${azurerm_resource_group.rsg.name}"
-  network_security_group_name =  azurerm_network_security_group.vault-nsg.name
+  resource_group_name         = azurerm_resource_group.rsg.name
+  network_security_group_name = azurerm_network_security_group.vault-nsg.name
 }
 
 resource "azurerm_network_interface" "vault-nic" {
   name                      = "vault-demo-nic"
-  location                  = "${var.location}"
-  resource_group_name       = "${azurerm_resource_group.rsg.name}"
-  network_security_group_id = "${azurerm_network_security_group.vault-nsg.id}"
+  location                  = var.location
+  resource_group_name       = azurerm_resource_group.rsg.name
+  network_security_group_id = azurerm_network_security_group.vault-nsg.id
 
   ip_configuration {
     name                          = "IPConfiguration"
@@ -85,12 +84,12 @@ resource "azurerm_network_interface" "vault-nic" {
 }
 
 resource "tls_private_key" "key" {
-  algorithm   = "RSA"
+  algorithm = "RSA"
 }
 
 resource "null_resource" "save-key" {
   triggers {
-    key = "${tls_private_key.key.private_key_pem}"
+    key = tls_private_key.key.private_key_pem
   }
 
   provisioner "local-exec" {
@@ -104,8 +103,8 @@ EOF
 
 resource "azurerm_virtual_machine" "vault-vm" {
   name                          = "vault-vm"
-  location                      = "${var.location}"
-  resource_group_name           = "${azurerm_resource_group.rsg.name}"
+  location                      = var.location
+  resource_group_name           = azurerm_resource_group.rsg.name
   network_interface_ids         = ["${azurerm_network_interface.vault-nic.id}"]
   vm_size                       = "Standard_DS1_v2"
   delete_os_disk_on_termination = true
@@ -146,15 +145,15 @@ resource "azurerm_virtual_machine" "vault-vm" {
 }
 
 resource "azurerm_virtual_machine_extension" "vault-extension" {
-  name                  = "vault-demo-extension"
-  location              = "${var.location}"
-  resource_group_name   = "${azurerm_resource_group.rsg.name}"
-  virtual_machine_name  = "${azurerm_virtual_machine.vault-vm.name}"
-  publisher             = "Microsoft.OSTCExtensions"
-  type                  = "CustomScriptForLinux"
-  type_handler_version  = "1.2"
+  name                 = "vault-demo-extension"
+  location             = var.location
+  resource_group_name  = azurerm_resource_group.rsg.name
+  virtual_machine_name = azurerm_virtual_machine.vault-vm.name
+  publisher            = "Microsoft.OSTCExtensions"
+  type                 = "CustomScriptForLinux"
+  type_handler_version = "1.2"
 
-  settings             = <<SETTINGS
+  settings = <<SETTINGS
     {
       "commandToExecute": "${var.cmd_extension}",
        "fileUris": [
@@ -168,8 +167,8 @@ SETTINGS
 data "azurerm_subscription" "primary" {}
 
 resource "azurerm_role_assignment" "vault-demo" {
-  scope                = "${data.azurerm_subscription.primary.id}"
+  scope                = data.azurerm_subscription.primary.id
   role_definition_name = "Reader"
-  principal_id         = "${lookup(azurerm_virtual_machine.vault-vm.identity[0], "principal_id")}"
+  principal_id         = lookup(azurerm_virtual_machine.vault-vm.identity[0], "principal_id")
 }
 
