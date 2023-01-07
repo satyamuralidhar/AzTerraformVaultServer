@@ -159,7 +159,7 @@ resource "azurerm_linux_virtual_machine" "vault-vm" {
     publisher = "Canonical"
     offer     = "UbuntuServer"
     sku       = "20.04-LTS"
-    version   = "gen2"
+    version   = "latest"
   }
 
   os_disk {
