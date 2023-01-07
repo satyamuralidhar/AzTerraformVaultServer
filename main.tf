@@ -144,11 +144,11 @@ EOF
 
 resource "azurerm_linux_virtual_machine" "vault-vm" {
   name                  = "vault-vm"
-  location              = azurerm_virtual_network.myvnet.location
+  location              = azurerm_virtual_network.vnet.location
   resource_group_name   = var.rsg
   size                  = "Standard_B1s"
   admin_username        = var.user_name
-  network_interface_ids = [azurerm_network_interface.mynic.id]
+  network_interface_ids = [azurerm_network_interface.vault-nic.id]
 
   admin_ssh_key {
     username   = var.user_name
@@ -178,7 +178,7 @@ resource "null_resource" "shell" {
       type        = "ssh"
       user        = "azureuser"
       private_key = tls_private_key.key.private_key_pem
-      host        = azurerm_linux_virtual_machine.myvm.public_ip_address
+      host        = azurerm_linux_virtual_machine.vault-vm.public_ip_address
     }
   }
 }
