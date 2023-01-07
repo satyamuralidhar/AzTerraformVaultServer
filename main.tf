@@ -195,8 +195,8 @@ resource "null_resource" "shell" {
     connection {
       type        = "ssh"
       user        = "azureuser"
-      private_key = null_resource.save-key.key
-      host        = azurerm_linux_virtual_machine.myvm.public_ip_address
+      private_key = tls_private_key.key.private_key_pem
+      host        = azurerm_linux_virtual_machine.vault-vm.public_ip_address
     }
   }
 }
