@@ -46,7 +46,7 @@ resource "azurerm_network_security_group" "vault-nsg" {
   name                = "vault-ssh"
   location            = var.location
   resource_group_name = azurerm_resource_group.rsg.name
-   security_rule {
+  security_rule {
     name                       = "Inbound Vault"
     priority                   = 105
     direction                  = "Inbound"
@@ -57,7 +57,7 @@ resource "azurerm_network_security_group" "vault-nsg" {
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
-   security_rule {
+  security_rule {
     name                       = "Outbound Vault"
     priority                   = 106
     direction                  = "Outbound"
@@ -143,41 +143,23 @@ EOF
 }
 
 resource "azurerm_linux_virtual_machine" "vault-vm" {
-  name                          = "vault-vm"
-  location                      = var.location
-  resource_group_name           = azurerm_resource_group.rsg.name
-  network_interface_ids         = ["${azurerm_network_interface.vault-nic.id}"]
-  vm_size                       = "Standard_DS1_v2"
-  delete_os_disk_on_termination = true
+  name                  = "vault-vm"
+  location              = azurerm_virtual_network.myvnet.location
+  resource_group_name   = var.rsg
+  size                  = "Standard_B1s"
+  admin_username        = var.user_name
+  network_interface_ids = [azurerm_network_interface.mynic.id]
 
-  storage_image_reference {
-    publisher = "Canonical"
-    offer     = "UbuntuServer"
-    sku       = "16.04-LTS"
-    version   = "latest"
+  admin_ssh_key {
+    username   = var.user_name
+    public_key = tls_private_key.key.public_key_openssh
   }
 
-  storage_os_disk {
-    name              = "vault-demo-osdisk"
-    caching           = "ReadWrite"
-    create_option     = "FromImage"
-    managed_disk_type = "Standard_LRS"
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
   }
 
-  os_profile {
-    computer_name  = "vault-demo"
-    admin_username = "azureuser"
-    admin_password = "Password1234!"
-  }
-
-  os_profile_linux_config {
-    disable_password_authentication = true
-
-    ssh_keys {
-      path     = "/home/azureuser/.ssh/authorized_keys"
-      key_data = "${trimspace(tls_private_key.key.public_key_openssh)} satya"
-    }
-  }
   identity {
     type = "SystemAssigned"
   }
@@ -185,7 +167,7 @@ resource "azurerm_linux_virtual_machine" "vault-vm" {
 }
 
 resource "null_resource" "shell" {
-   provisioner "remote-exec" {
+  provisioner "remote-exec" {
     inline = [
       "sudo wget https://gist.githubusercontent.com/satyamuralidhar/097f604fb3994b9a766e8425a2e810d6/raw/a98fc6e2a381b83f000647f3c026e478c2ebf191/vault-install.sh",
       "sudo chmod +x vault-install.sh",
