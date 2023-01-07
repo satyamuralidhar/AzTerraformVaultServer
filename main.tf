@@ -161,7 +161,7 @@ resource "azurerm_linux_virtual_machine" "vault-vm" {
     sku       = "16.04-LTS"
     version   = "latest"
   }
-  
+
   os_disk {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
@@ -183,7 +183,7 @@ resource "null_resource" "shell" {
     ]
     connection {
       type        = "ssh"
-      user        = "azureuser"
+      user        = var.user_name
       private_key = tls_private_key.key.private_key_pem
       host        = azurerm_linux_virtual_machine.vault-vm.public_ip_address
     }
