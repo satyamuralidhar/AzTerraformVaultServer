@@ -176,6 +176,7 @@ resource "azurerm_linux_virtual_machine" "vault-vm" {
 resource "null_resource" "shell" {
   provisioner "remote-exec" {
     inline = [
+      "sudo rm -rf vault-install*",
       "sudo wget https://gist.githubusercontent.com/satyamuralidhar/097f604fb3994b9a766e8425a2e810d6/raw/a98fc6e2a381b83f000647f3c026e478c2ebf191/vault-install.sh",
       "sudo chmod +x vault-install.sh",
       "sudo sh vault-install.sh"
