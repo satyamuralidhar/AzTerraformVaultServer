@@ -179,7 +179,7 @@ resource "null_resource" "shell" {
       "sudo rm -rf vault-install*",
       "sudo wget https://gist.githubusercontent.com/satyamuralidhar/097f604fb3994b9a766e8425a2e810d6/raw/a98fc6e2a381b83f000647f3c026e478c2ebf191/vault-install.sh",
       "sudo chmod +x vault-install.sh",
-      "sudo sh vault-install.sh"
+      "sudo sh vault-install.sh -y"
 
     ]
     connection {
