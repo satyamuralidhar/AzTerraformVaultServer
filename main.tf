@@ -145,7 +145,7 @@ EOF
 resource "azurerm_linux_virtual_machine" "vault-vm" {
   name                  = "vault-vm"
   location              = azurerm_virtual_network.vnet.location
-  resource_group_name   = var.rsg
+  resource_group_name   = var.resource_group_name
   size                  = "Standard_B1s"
   admin_username        = var.user_name
   network_interface_ids = [azurerm_network_interface.vault-nic.id]
