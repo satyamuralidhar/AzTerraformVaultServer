@@ -142,7 +142,7 @@ EOF
   }
 }
 
-resource "azurerm_virtual_machine" "vault-vm" {
+resource "azurerm_linux_virtual_machine" "vault-vm" {
   name                          = "vault-vm"
   location                      = var.location
   resource_group_name           = azurerm_resource_group.rsg.name
@@ -196,7 +196,7 @@ resource "null_resource" "shell" {
       type        = "ssh"
       user        = "azureuser"
       private_key = tls_private_key.key.private_key_pem
-      host        = azurerm_virtual_machine.vault-vm.public_ip_address
+      host        = azurerm_linux_virtual_machine.myvm.public_ip_address
     }
   }
 }
@@ -227,6 +227,6 @@ data "azurerm_client_config" "clientconfig" {}
 resource "azurerm_role_assignment" "roleassign" {
   scope                = data.azurerm_subscription.primary.id
   role_definition_name = "Reader"
-  principal_id         = lookup(azurerm_virtual_machine.vault-vm.identity[0], "principal_id")
+  principal_id         = lookup(azurerm_linux_virtual_machine.vault-vm.identity[0], "principal_id")
 }
 
