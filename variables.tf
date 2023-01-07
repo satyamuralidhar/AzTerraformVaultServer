@@ -10,9 +10,6 @@ variable "sg_name" {
 
 variable "subnet_prefixes" {}
 
-variable "subnet_names" {
-  default = ["azure-vault-demo-public-subnet", "azure-vault-demo-private-subnet"]
-}
 
 ## Provisioning script variables
 
