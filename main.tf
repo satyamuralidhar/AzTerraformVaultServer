@@ -155,6 +155,13 @@ resource "azurerm_linux_virtual_machine" "vault-vm" {
     public_key = tls_private_key.key.public_key_openssh
   }
 
+  source_image_reference {
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "16.04-LTS"
+    version   = "latest"
+  }
+  
   os_disk {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
