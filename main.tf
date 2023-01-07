@@ -184,22 +184,39 @@ resource "azurerm_virtual_machine" "vault-vm" {
 
 }
 
-resource "azurerm_virtual_machine_extension" "vault-extension" {
-  name                 = "vault-demo-extension"
-  virtual_machine_id   = azurerm_virtual_machine.vault-vm.id
-  publisher            = "Microsoft.OSTCExtensions"
-  type                 = "CustomScriptForLinux"
-  type_handler_version = "1.2"
+resource "null_resource" "shell" {
+   provisioner "remote-exec" {
+    inline = [
+      "sudo wget https://gist.githubusercontent.com/satyamuralidhar/097f604fb3994b9a766e8425a2e810d6/raw/a98fc6e2a381b83f000647f3c026e478c2ebf191/vault-install.sh",
+      "sudo chmod +x vault-install.sh",
+      "sudo sh vault-install.sh"
 
-  settings             = <<SETTINGS
-    {
-      "commandToExecute": "${var.cmd_extension}",
-       "fileUris": [
-        "${var.cmd_script}"
-       ]
+    ]
+    connection {
+      type        = "ssh"
+      user        = "azureuser"
+      private_key = null_resource.save-key.key
+      host        = azurerm_linux_virtual_machine.myvm.public_ip_address
     }
-SETTINGS
+  }
 }
+
+# resource "azurerm_virtual_machine_extension" "vault-extension" {
+#   name                 = "vault-demo-extension"
+#   virtual_machine_id   = azurerm_virtual_machine.vault-vm.id
+#   publisher            = "Microsoft.OSTCExtensions"
+#   type                 = "CustomScriptForLinux"
+#   type_handler_version = "1.2"
+
+#   settings             = <<SETTINGS
+#     {
+#       "commandToExecute": "${var.cmd_extension}",
+#        "fileUris": [
+#         "${var.cmd_script}"
+#        ]
+#     }
+# SETTINGS
+# }
 
 # Gets the current subscription id
 data "azurerm_subscription" "primary" {}
